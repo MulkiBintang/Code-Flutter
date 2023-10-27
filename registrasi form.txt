@@ -1,0 +1,238 @@
+import 'package:flutter/material.dart';
+
+List<String> list = <String>[
+  'Student',
+  'Employee',
+  'Businessman',
+  'Engineer',
+  'Others'
+];
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      theme: ThemeData(
+        primarySwatch: Colors.indigo,
+      ),
+      home: const MyForm(),
+    );
+  }
+}
+
+enum Gender { Male, Female }
+
+class MyForm extends StatefulWidget {
+  const MyForm({super.key});
+
+  @override
+  State<MyForm> createState() => _MyFormState();
+}
+
+class _MyFormState extends State<MyForm> {
+  Gender? _gender = Gender.Male;
+  double _currentSliderValue = 1;
+  String dropdownValue = list.first;
+  final _formKey = GlobalKey<FormState>();
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('REGISTRATION FORM'),
+        centerTitle: true,
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+          child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  Image.asset("images/registration.png",
+                      height: 200, width: 200),
+                  const SizedBox(
+                    height: 50,
+                  ),
+                  TextFormField(
+                    keyboardType: TextInputType.name,
+                    decoration: const InputDecoration(
+                      labelText: 'Name',
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.people),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your name';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  TextFormField(
+                    keyboardType: TextInputType.text,
+                    decoration: const InputDecoration(
+                      labelText: 'Address',
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.house),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your address';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  const Text('Gender'),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  ListTile(
+                    title: const Text('Male'),
+                    leading: Radio<Gender>(
+                      value: Gender.Male,
+                      groupValue: _gender,
+                      onChanged: (Gender? value) {
+                        setState(() {
+                          _gender = value;
+                        });
+                      },
+                    ),
+                  ),
+                  ListTile(
+                    title: const Text('Female'),
+                    leading: Radio<Gender>(
+                      value: Gender.Female,
+                      groupValue: _gender,
+                      onChanged: (Gender? value) {
+                        setState(() {
+                          _gender = value;
+                        });
+                      },
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  const Text('Age'),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Slider(
+                    value: _currentSliderValue,
+                    min: 1,
+                    max: 100,
+                    divisions: 99,
+                    label: _currentSliderValue.round().toString(),
+                    onChanged: (double value) {
+                      setState(() {
+                        _currentSliderValue = value;
+                      });
+                    },
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  const Text('Job'),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  DropdownMenu(
+                    initialSelection: list.first,
+                    onSelected: (String? value) {
+                      setState(() {
+                        dropdownValue = value!;
+                      });
+                    },
+                    dropdownMenuEntries:
+                        list.map<DropdownMenuEntry<String>>((String value) {
+                      return DropdownMenuEntry<String>(
+                          value: value, label: value);
+                    }).toList(),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  TextFormField(
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: const InputDecoration(
+                      labelText: 'Email',
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.email),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your email';
+                      }
+                      if (!RegExp(r"^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$")
+                          .hasMatch(value)) {
+                        return 'Email address invalid';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  TextFormField(
+                    keyboardType: TextInputType.phone,
+                    decoration: const InputDecoration(
+                      labelText: 'Phone',
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.phone),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your phone number';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => NextPage()),
+                        );
+                        _formKey.currentState!.reset();
+                      }
+                    },
+                    child: const Text('Register'),
+                  )
+                ],
+              )),
+        ),
+      ),
+    );
+  }
+}
+
+class NextPage extends StatelessWidget {
+  const NextPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('REGISTRATION FORM'),
+      ),
+      body: const Center(
+        child: Text('Congratulations, you have registered'),
+      ),
+    );
+  }
+}
